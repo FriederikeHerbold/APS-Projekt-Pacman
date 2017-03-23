@@ -1,0 +1,15 @@
+Anforderungen Pac-Man
+
+Das Spielfeld ist ein 2-dimensionales Raster mit Mauern, deren Zwischenräume ein Labyrinth ohne Ausgang und ohne Sackgassen darstellen, 
+einem Startpunkt von Pac-Man und Startpunkte für alle Geister. Alle Startpunkte liegen auf Mauern und am Anfang des Spiels liegen kleine 
+Pillen auf jedem Zwischenraum. Es gibt einen Score, der bei 0 Punkten startet.
+
+Pac-Man und die Geister bewegen sich in jedem Frame um ein Feld nach rechts, links oben oder unten, jedoch nicht in eine Mauer hinein. 
+Die Bewegung von Pac-Man wird von den Pfeiltasten beeinflusst d.h wenn der Spieler beim Framewechsel zum Beispiel nach links drückt, 
+bewegt sich Pac-Man nach links. Werden keine oder mehrere Pfeiltasten gedrückt, bewegt sich PacMan in die alte Richtung weiter. 
+Ist eine Mauer in Pac-Mans vorgegebenen Weg, bleibt Pac-Man für diesen Frame stehen. Die Bewegung der Geister wird durch Zufall bestimmt, 
+jedoch bewegen sie sich nie ein Feld zurück und natürlich auch nicht in Mauern hinein.
+
+Bewegt sich Pac-Man auf ein Feld mit einer Pille, wird die eingesammelt. D.h. die Pille verschwindet für den Rest des Spiels vom 
+Spielfeld und der Score wird um 1 erhöht. Sind alle Pillen eingesammelt, hat der Spieler gewonnen. Ist Pac-Man in einem Frame auf dem 
+gleichen Feld wie ein Geist oder tauschen er und ein Geist in einem Framewechsel ihre Felder, stirbt Pac-Man und der Spieler hat verloren.
