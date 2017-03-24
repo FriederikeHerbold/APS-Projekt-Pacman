@@ -31,7 +31,7 @@ public class Board extends JPanel implements ActionListener {
 	private boolean inGame = false;
 	private boolean dying = false;
 
-	private final int BLOCK_SIZE = 24;
+	private final int BLOCK_SIZE = 40;
 	private final int N_BLOCKS = 15;
 	private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
 	private final int PAC_ANIM_DELAY = 2;
@@ -47,6 +47,7 @@ public class Board extends JPanel implements ActionListener {
 	private int[] dx, dy;
 	private int[] ghost_x, ghost_y, ghost_dx, ghost_dy, ghostSpeed;
 
+	private Image spielbrett, zettel;
 	private Image ghost;
 	private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
 	private Image pacman3up, pacman3down, pacman3left, pacman3right;
@@ -437,7 +438,7 @@ public class Board extends JPanel implements ActionListener {
 		for (y = 0; y < SCREEN_SIZE; y += BLOCK_SIZE) {
 			for (x = 0; x < SCREEN_SIZE; x += BLOCK_SIZE) {
 
-				g2d.setColor(mazeColor);
+				/*g2d.setColor(mazeColor);
 				g2d.setStroke(new BasicStroke(2));
 
 				if ((screenData[i] & 1) != 0) {
@@ -454,11 +455,12 @@ public class Board extends JPanel implements ActionListener {
 
 				if ((screenData[i] & 8) != 0) {
 					g2d.drawLine(x, y + BLOCK_SIZE - 1, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1);
-				}
+				}*/
 
 				if ((screenData[i] & 16) != 0) {
-					g2d.setColor(dotColor);
-					g2d.fillRect(x + 11, y + 11, 2, 2);
+//					g2d.setColor(dotColor);
+//					g2d.fillRect(x + 11, y + 11, 2, 2);
+					g2d.drawImage(zettel, x + 11, y + 11, 20, 20, this);
 				}
 
 				i++;
@@ -519,21 +521,38 @@ public class Board extends JPanel implements ActionListener {
 	}
 
 	private void loadImages() {
-
+		
+//		spielbrett = new ImageIcon("images/Spielfeld.png").getImage();
+//		zettel = new ImageIcon("images/zettel2.png").getImage();
+//		ghost = new ImageIcon("images/prof3.png").getImage();
+//		pacman1 = new ImageIcon("images/down1.png").getImage();
+//		pacman2up = new ImageIcon("images/down1.png").getImage();
+//		pacman3up = new ImageIcon("images/down1.png").getImage();
+//		pacman4up = new ImageIcon("images/down1.png").getImage();
+//		pacman2down = new ImageIcon("images/down1.png").getImage();
+//		pacman3down = new ImageIcon("images/down1.png").getImage();
+//		pacman4down = new ImageIcon("images/down1.png").getImage();
+//		pacman2left = new ImageIcon("images/down1.png").getImage();
+//		pacman3left = new ImageIcon("images/down1.png").getImage();
+//		pacman4left = new ImageIcon("images/down1.png").getImage();
+//		pacman2right = new ImageIcon("images/down1.png").getImage();
+//		pacman3right = new ImageIcon("images/down1.png").getImage();
+//		pacman4right = new ImageIcon("images/down1.png").getImage();
+		
 		ghost = new ImageIcon("images/ghost.png").getImage();
-		pacman1 = new ImageIcon("images/pacman.png").getImage();
-		pacman2up = new ImageIcon("images/up1.png").getImage();
-		pacman3up = new ImageIcon("images/up2.png").getImage();
-		pacman4up = new ImageIcon("images/up3.png").getImage();
-		pacman2down = new ImageIcon("images/down1.png").getImage();
-		pacman3down = new ImageIcon("images/down2.png").getImage();
-		pacman4down = new ImageIcon("images/down3.png").getImage();
-		pacman2left = new ImageIcon("images/left1.png").getImage();
-		pacman3left = new ImageIcon("images/left2.png").getImage();
-		pacman4left = new ImageIcon("images/left3.png").getImage();
-		pacman2right = new ImageIcon("images/right1.png").getImage();
-		pacman3right = new ImageIcon("images/right2.png").getImage();
-		pacman4right = new ImageIcon("images/right3.png").getImage();
+        pacman1 = new ImageIcon("images/pacman.png").getImage();
+        pacman2up = new ImageIcon("images/up1.png").getImage();
+        pacman3up = new ImageIcon("images/up2.png").getImage();
+        pacman4up = new ImageIcon("images/up3.png").getImage();
+        pacman2down = new ImageIcon("images/down1.png").getImage();
+        pacman3down = new ImageIcon("images/down2.png").getImage();
+        pacman4down = new ImageIcon("images/down3.png").getImage();
+        pacman2left = new ImageIcon("images/left1.png").getImage();
+        pacman3left = new ImageIcon("images/left2.png").getImage();
+        pacman4left = new ImageIcon("images/left3.png").getImage();
+        pacman2right = new ImageIcon("images/right1.png").getImage();
+        pacman3right = new ImageIcon("images/right2.png").getImage();
+        pacman4right = new ImageIcon("images/right3.png").getImage();
 
 	}
 
@@ -547,9 +566,10 @@ public class Board extends JPanel implements ActionListener {
 	private void doDrawing(Graphics g) {
 
 		Graphics2D g2d = (Graphics2D) g;
+		g2d.drawImage(spielbrett, 0, 0, 600, 600, this);
 
-		g2d.setColor(Color.black);
-		g2d.fillRect(0, 0, d.width, d.height);
+//		g2d.setColor(Color.black);
+//		g2d.fillRect(0, 0, d.width, d.height);
 
 		drawMaze(g2d);
 		drawScore(g2d);
