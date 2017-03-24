@@ -18,7 +18,11 @@ import javax.swing.Timer;
 
 public class Board extends JPanel implements ActionListener {
 
-    private Dimension d;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Dimension d;
     private final Font smallFont = new Font("Helvetica", Font.BOLD, 14);
 
     private Image ii;
