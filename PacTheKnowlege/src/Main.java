@@ -2,7 +2,9 @@
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
-@SuppressWarnings("serial")
+import com.zetcode.Pacman;
+
+//@SuppressWarnings("serial")
 public class Main extends JFrame {
 
     public Main() {
