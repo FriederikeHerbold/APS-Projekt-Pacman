@@ -2,8 +2,6 @@
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
-import com.zetcode.Pacman;
-
 //@SuppressWarnings("serial")
 public class Main extends JFrame {
 
