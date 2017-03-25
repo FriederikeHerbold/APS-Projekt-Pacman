@@ -1,8 +1,6 @@
-
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
-//@SuppressWarnings("serial")
 public class Main extends JFrame {
 
     public Main() {
@@ -12,11 +10,11 @@ public class Main extends JFrame {
     
     private void initUI() {
         
-        add(new Board());
+        add(new Spielfeld());
         
         setTitle("Pacman");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(380, 420);
+        setSize(780, 850);
         setLocationRelativeTo(null);
         setVisible(true);        
     }

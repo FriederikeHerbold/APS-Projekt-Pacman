@@ -1,4 +1,3 @@
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,16 +12,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class Board extends JPanel implements ActionListener {
+public class Spielfeld extends JPanel implements ActionListener {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private Dimension d;
+    private Dimension d;
     private final Font smallFont = new Font("Helvetica", Font.BOLD, 14);
 
     private Image ii;
@@ -32,42 +29,53 @@ public class Board extends JPanel implements ActionListener {
     private boolean inGame = false;
     private boolean dying = false;
 
-    Pacman pacmanObject;
-    Gohst ghostObject;
-    
-    private final int BLOCK_SIZE = 24;
+    private final int BLOCK_SIZE = 48;
     private final int N_BLOCKS = 15;
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
-
+    private final int PAC_ANIM_DELAY = 2;
+    private final int PACMAN_ANIM_COUNT = 4;
     private final int MAX_GHOSTS = 12;
+    private final int PACMAN_SPEED = 6;
 
-   
+    private int pacAnimCount = PAC_ANIM_DELAY;
+    private int pacAnimDir = 1;
+    private int pacmanAnimPos = 0;
     private int N_GHOSTS = 6;
     private int pacsLeft, score;
     private int[] dx, dy;
     private int[] ghost_x, ghost_y, ghost_dx, ghost_dy, ghostSpeed;
-    private int pacman_x, pacman_y, pacmand_x, pacmand_y;
 
-    
-    
+    private Image ghost;
+    private Image pacman1,pacman2up, pacman2left, pacman2right, pacman2down;
+//    private Image pacman3up, pacman3down, pacman3left, pacman3right;
+//    private Image pacman4up, pacman4down, pacman4left, pacman4right;
+    private Image spielfeld;
+    private Image zettel;
+
+    private int pacman_x, pacman_y, pacmand_x, pacmand_y;
     private int req_dx, req_dy, view_dx, view_dy;
+    
+    private boolean leftPressed=false;
+    private boolean upPressed=false;
+    private boolean downPressed=false;
+    private boolean rightPressed=false;
 
     private final short levelData[] = {
-        19, 26, 26, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
-        21, 0, 0, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-        21, 0, 0, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-        21, 0, 0, 0, 17, 16, 16, 24, 16, 16, 16, 16, 16, 16, 20,
-        17, 18, 18, 18, 16, 16, 20, 0, 17, 16, 16, 16, 16, 16, 20,
-        17, 16, 16, 16, 16, 16, 20, 0, 17, 16, 16, 16, 16, 24, 20,
-        25, 16, 16, 16, 24, 24, 28, 0, 25, 24, 24, 16, 20, 0, 21,
-        1, 17, 16, 20, 0, 0, 0, 0, 0, 0, 0, 17, 20, 0, 21,
-        1, 17, 16, 16, 18, 18, 22, 0, 19, 18, 18, 16, 20, 0, 21,
-        1, 17, 16, 16, 16, 16, 20, 0, 17, 16, 16, 16, 20, 0, 21,
-        1, 17, 16, 16, 16, 16, 20, 0, 17, 16, 16, 16, 20, 0, 21,
-        1, 17, 16, 16, 16, 16, 16, 18, 16, 16, 16, 16, 20, 0, 21,
-        1, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0, 21,
-        1, 25, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 18, 20,
-        9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 25, 24, 24, 24, 28
+    		3,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  6, 
+    		1,  0, 19, 26, 26, 22,  0,  0,  0, 19, 26, 26, 26, 22,  4, 
+    		1,  0, 21,  0,  0, 25, 22,  0,  0, 21,  0,  0,  0, 21,  4, 
+    		1, 19, 24, 22,  0,  0, 25, 18, 26, 16, 26, 26, 26, 20,  4, 
+    		1, 21,  0, 17, 26, 22,  0, 21,  0, 21,  0,  0,  0, 21,  4, 
+    		1, 25, 26, 20,  0, 21,  0, 21,  0, 21,  0, 19, 26, 20,  4, 
+    		1,  0,  0, 21,  0, 17, 26, 24, 26, 16, 26, 20,  0, 21,  4,
+    		1, 19, 26, 20,  0, 21,  0,  0,  0, 21,  0, 21,  0, 21,  4, 
+    		1, 21,  0, 17, 26, 24, 18, 26, 26, 20,  0, 25, 18, 28,  4,
+    		1, 21,  0, 21,  0,  0, 21,  0,  0, 21,  0,  0, 21,  0,  4, 
+    		1, 21,  0, 17, 26, 18, 28,  0, 19, 24, 26, 26, 24, 22,  4, 
+    		1, 17, 26, 28,  0, 21,  0,  0, 21,  0,  0,  0,  0, 21,  4,
+    		1, 21,  0,  0,  0, 17, 18, 26, 24, 26, 26, 22,  0, 21,  4, 
+    		1, 25, 26, 26, 26, 24, 28,  0,  0,  0,  0, 25, 26, 28,  4, 
+    		9,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  12
     };
 
     private final int validSpeeds[] = {1, 2, 3, 4, 6, 8};
@@ -77,17 +85,16 @@ public class Board extends JPanel implements ActionListener {
     private short[] screenData;
     private Timer timer;
 
-    public Board() {
+    public Spielfeld() {
 
-        pacmanObject = new Pacman();
-        ghostObject = new Gohst();
+        loadImages();
         initVariables();
         initBoard();
     }
     
     private void initBoard() {
         
-        addKeyListener(new TAdapter());
+        addKeyListener(new TastaturEingabeRegler());
 
         setFocusable(true);
 
@@ -119,7 +126,19 @@ public class Board extends JPanel implements ActionListener {
         initGame();
     }
 
- 
+    private void doAnim() {
+
+        pacAnimCount--;
+
+        if (pacAnimCount <= 0) {
+            pacAnimCount = PAC_ANIM_DELAY;
+            pacmanAnimPos = pacmanAnimPos + pacAnimDir;
+
+            if (pacmanAnimPos == (PACMAN_ANIM_COUNT - 1) || pacmanAnimPos == 0) {
+                pacAnimDir = -pacAnimDir;
+            }
+        }
+    }
 
     private void playGame(Graphics2D g2d) {
 
@@ -163,7 +182,7 @@ public class Board extends JPanel implements ActionListener {
         g.drawString(s, SCREEN_SIZE / 2 + 96, SCREEN_SIZE + 16);
 
         for (i = 0; i < pacsLeft; i++) {
-            g.drawImage(pacmanObject.getPacman3left(), i * 28 + 8, SCREEN_SIZE + 1, this);
+            g.drawImage(pacman2left, i * 28 + 8, SCREEN_SIZE + 1, this);
         }
     }
 
@@ -283,7 +302,7 @@ public class Board extends JPanel implements ActionListener {
 
     private void drawGhost(Graphics2D g2d, int x, int y) {
 
-        g2d.drawImage(ghostObject.getGhost(), x, y, this);
+        g2d.drawImage(ghost, x, y, this);
     }
 
     private void movePacman() {
@@ -328,8 +347,8 @@ public class Board extends JPanel implements ActionListener {
                 pacmand_y = 0;
             }
         }
-        pacman_x = pacman_x + pacmanObject.getPACMAN_SPEED() * pacmand_x;
-        pacman_y = pacman_y + pacmanObject.getPACMAN_SPEED() * pacmand_y;
+        pacman_x = pacman_x + PACMAN_SPEED * pacmand_x;
+        pacman_y = pacman_y + PACMAN_SPEED * pacmand_y;
     }
 
     private void drawPacman(Graphics2D g2d) {
@@ -340,81 +359,86 @@ public class Board extends JPanel implements ActionListener {
             drawPacmanRight(g2d);
         } else if (view_dy == -1) {
             drawPacmanUp(g2d);
-        } else {
+        } else if(view_dy == 1){
             drawPacmanDown(g2d);
+        }else{
+        	drawPacmanStill(g2d);
         }
+        
     }
-
+    private void drawPacmanStill(Graphics2D g2d) {
+    	g2d.drawImage(pacman1, pacman_x + 1, pacman_y + 1, this);
+    }
     private void drawPacmanUp(Graphics2D g2d) {
 
-        switch (pacmanObject.getPacmanAnimPos()) {
-            case 1:
-                g2d.drawImage(pacmanObject.getPacman2up(), pacman_x + 1, pacman_y + 1, this);
-                break;
-            case 2:
-                g2d.drawImage(pacmanObject.getPacman3up(), pacman_x + 1, pacman_y + 1, this);
-                break;
-            case 3:
-                g2d.drawImage(pacmanObject.getPacman4up(), pacman_x + 1, pacman_y + 1, this);
-                break;
-            default:
-                g2d.drawImage(pacmanObject.getPacman1(), pacman_x + 1, pacman_y + 1, this);
-                break;
-        }
+   //     switch (pacmanAnimPos) {
+  //          case 1:
+                g2d.drawImage(pacman2up, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//            case 2:
+//                g2d.drawImage(pacman3up, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//            case 3:
+//                g2d.drawImage(pacman4up, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//            default:
+//                g2d.drawImage(pacman1, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//        }
     }
 
     private void drawPacmanDown(Graphics2D g2d) {
 
-        switch (pacmanObject.getPacmanAnimPos()) {
-            case 1:
-                g2d.drawImage(pacmanObject.getPacman2down(), pacman_x + 1, pacman_y + 1, this);
-                break;
-            case 2:
-                g2d.drawImage(pacmanObject.getPacman3down(), pacman_x + 1, pacman_y + 1, this);
-                break;
-            case 3:
-                g2d.drawImage(pacmanObject.getPacman4down(), pacman_x + 1, pacman_y + 1, this);
-                break;
-            default:
-                g2d.drawImage(pacmanObject.getPacman1(), pacman_x + 1, pacman_y + 1, this);
-                break;
-        }
+//        switch (pacmanAnimPos) {
+//            case 1:
+                g2d.drawImage(pacman2down, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//            case 2:
+//                g2d.drawImage(pacman3down, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//            case 3:
+//                g2d.drawImage(pacman4down, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//            default:
+//                g2d.drawImage(pacman1, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//        }
     }
 
     private void drawPacnanLeft(Graphics2D g2d) {
 
-        switch (pacmanObject.getPacmanAnimPos()) {
-            case 1:
-                g2d.drawImage(pacmanObject.getPacman2left(), pacman_x + 1, pacman_y + 1, this);
-                break;
-            case 2:
-                g2d.drawImage(pacmanObject.getPacman3left(), pacman_x + 1, pacman_y + 1, this);
-                break;
-            case 3:
-                g2d.drawImage(pacmanObject.getPacman4left(), pacman_x + 1, pacman_y + 1, this);
-                break;
-            default:
-                g2d.drawImage(pacmanObject.getPacman1(), pacman_x + 1, pacman_y + 1, this);
-                break;
-        }
+//        switch (pacmanAnimPos) {
+//            case 1:
+                g2d.drawImage(pacman2left, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//            case 2:
+//                g2d.drawImage(pacman3left, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//            case 3:
+//                g2d.drawImage(pacman4left, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//            default:
+//                g2d.drawImage(pacman1, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//        }
     }
 
     private void drawPacmanRight(Graphics2D g2d) {
 
-        switch (pacmanObject.getPacmanAnimPos()) {
-            case 1:
-                g2d.drawImage(pacmanObject.getPacman2right(), pacman_x + 1, pacman_y + 1, this);
-                break;
-            case 2:
-                g2d.drawImage(pacmanObject.getPacman3right(), pacman_x + 1, pacman_y + 1, this);
-                break;
-            case 3:
-                g2d.drawImage(pacmanObject.getPacman4right(), pacman_x + 1, pacman_y + 1, this);
-                break;
-            default:
-                g2d.drawImage(pacmanObject.getPacman1(), pacman_x + 1, pacman_y + 1, this);
-                break;
-        }
+//        switch (pacmanAnimPos) {
+//            case 1:
+                g2d.drawImage(pacman2right, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//            case 2:
+//                g2d.drawImage(pacman3right, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//            case 3:
+//                g2d.drawImage(pacman4right, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//            default:
+//                g2d.drawImage(pacman1, pacman_x + 1, pacman_y + 1, this);
+//                break;
+//        }
     }
 
     private void drawMaze(Graphics2D g2d) {
@@ -425,30 +449,32 @@ public class Board extends JPanel implements ActionListener {
         for (y = 0; y < SCREEN_SIZE; y += BLOCK_SIZE) {
             for (x = 0; x < SCREEN_SIZE; x += BLOCK_SIZE) {
 
-                g2d.setColor(mazeColor);
-                g2d.setStroke(new BasicStroke(2));
-
-                if ((screenData[i] & 1) != 0) { 
-                    g2d.drawLine(x, y, x, y + BLOCK_SIZE - 1);
-                }
-
-                if ((screenData[i] & 2) != 0) { 
-                    g2d.drawLine(x, y, x + BLOCK_SIZE - 1, y);
-                }
-
-                if ((screenData[i] & 4) != 0) { 
-                    g2d.drawLine(x + BLOCK_SIZE - 1, y, x + BLOCK_SIZE - 1,
-                            y + BLOCK_SIZE - 1);
-                }
-
-                if ((screenData[i] & 8) != 0) { 
-                    g2d.drawLine(x, y + BLOCK_SIZE - 1, x + BLOCK_SIZE - 1,
-                            y + BLOCK_SIZE - 1);
-                }
+//                g2d.setColor(mazeColor);
+//                g2d.setStroke(new BasicStroke(2));
+//
+//                if ((screenData[i] & 1) != 0) { 
+//                    g2d.drawLine(x, y, x, y + BLOCK_SIZE - 1);
+//                }
+//
+//                if ((screenData[i] & 2) != 0) { 
+//                    g2d.drawLine(x, y, x + BLOCK_SIZE - 1, y);
+//                }
+//
+//                if ((screenData[i] & 4) != 0) { 
+//                    g2d.drawLine(x + BLOCK_SIZE - 1, y, x + BLOCK_SIZE - 1,
+//                            y + BLOCK_SIZE - 1);
+//                }
+//
+//                if ((screenData[i] & 8) != 0) { 
+//                    g2d.drawLine(x, y + BLOCK_SIZE - 1, x + BLOCK_SIZE - 1,
+//                            y + BLOCK_SIZE - 1);
+//                }
 
                 if ((screenData[i] & 16) != 0) { 
-                    g2d.setColor(dotColor);
-                    g2d.fillRect(x + 11, y + 11, 2, 2);
+//                    g2d.setColor(dotColor);
+//                    g2d.fillRect(x + 11, y + 11, 2, 2);
+                    g2d.drawImage(zettel, x + 11, y + 11, 20, 20, this);
+
                 }
 
                 i++;
@@ -483,8 +509,8 @@ public class Board extends JPanel implements ActionListener {
 
         for (i = 0; i < N_GHOSTS; i++) {
 
-            ghost_y[i] = 4 * BLOCK_SIZE;
-            ghost_x[i] = 4 * BLOCK_SIZE;
+            ghost_y[i] = 3 * BLOCK_SIZE;
+            ghost_x[i] = 7 * BLOCK_SIZE;
             ghost_dy[i] = 0;
             ghost_dx[i] = dx;
             dx = -dx;
@@ -498,7 +524,7 @@ public class Board extends JPanel implements ActionListener {
         }
 
         pacman_x = 7 * BLOCK_SIZE;
-        pacman_y = 11 * BLOCK_SIZE;
+        pacman_y = 8 * BLOCK_SIZE;
         pacmand_x = 0;
         pacmand_y = 0;
         req_dx = 0;
@@ -508,7 +534,28 @@ public class Board extends JPanel implements ActionListener {
         dying = false;
     }
 
-    
+    private void loadImages() {
+
+        ghost = new ImageIcon("images/prof3.png").getImage();
+        
+        
+//        pacman1 = new ImageIcon("images/Student-vorne.png").getImage();        
+//        pacman2up = new ImageIcon("images/Student-oben.png").getImage();        
+//        pacman2down = new ImageIcon("images/Student-unten.png").getImage();
+//        pacman2left = new ImageIcon("images/Student-links.png").getImage();        
+//        pacman2right = new ImageIcon("images/Student-rechts.png").getImage();
+        
+        pacman1 = new ImageIcon("images/Super-Student-vorne.png").getImage();        
+        pacman2up = new ImageIcon("images/Super-Student-oben.png").getImage();        
+        pacman2down = new ImageIcon("images/Super-Student-unten.png").getImage();
+        pacman2left = new ImageIcon("images/Super-Student-links.png").getImage();        
+        pacman2right = new ImageIcon("images/Super-Student-rechts.png").getImage();
+        
+        spielfeld = new ImageIcon("images/spielfeld.png").getImage();
+        zettel = new ImageIcon("images/zettel2.png").getImage();
+
+    }
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -519,13 +566,13 @@ public class Board extends JPanel implements ActionListener {
     private void doDrawing(Graphics g) {
 
         Graphics2D g2d = (Graphics2D) g;
-
-        g2d.setColor(Color.black);
-        g2d.fillRect(0, 0, d.width, d.height);
+        g2d.drawImage(spielfeld, 0, 0, 720, 720, this);
+//        g2d.setColor(Color.black);
+//        g2d.fillRect(0, 0, d.width, d.height);
 
         drawMaze(g2d);
         drawScore(g2d);
-        pacmanObject.doAnim();
+        doAnim();
 
         if (inGame) {
             playGame(g2d);
@@ -538,7 +585,7 @@ public class Board extends JPanel implements ActionListener {
         g2d.dispose();
     }
 
-    class TAdapter extends KeyAdapter {
+    class TastaturEingabeRegler extends KeyAdapter {
 
         @Override
         public void keyPressed(KeyEvent e) {
@@ -549,15 +596,19 @@ public class Board extends JPanel implements ActionListener {
                 if (key == KeyEvent.VK_LEFT) {
                     req_dx = -1;
                     req_dy = 0;
+                    leftPressed=true;
                 } else if (key == KeyEvent.VK_RIGHT) {
                     req_dx = 1;
                     req_dy = 0;
+                    rightPressed=true;
                 } else if (key == KeyEvent.VK_UP) {
                     req_dx = 0;
                     req_dy = -1;
+                    upPressed=true;
                 } else if (key == KeyEvent.VK_DOWN) {
                     req_dx = 0;
                     req_dy = 1;
+                    downPressed=true;
                 } else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
                     inGame = false;
                 } else if (key == KeyEvent.VK_PAUSE) {
@@ -580,15 +631,44 @@ public class Board extends JPanel implements ActionListener {
 
             int key = e.getKeyCode();
 
-            if (key == Event.LEFT || key == Event.RIGHT
-                    || key == Event.UP || key == Event.DOWN) {
+            if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_RIGHT
+                    || key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) {
                 req_dx = 0;
                 req_dy = 0;
             }
+            
+            if(key==KeyEvent.VK_LEFT){
+            	leftPressed=false;
+            }else if(key==KeyEvent.VK_RIGHT){
+            	rightPressed=false;
+            }else if(key==KeyEvent.VK_UP){
+            	upPressed=false;
+            }else if(key==KeyEvent.VK_DOWN){
+            	downPressed=false;
+            }
+            
+            //Wenn kein oder ein Button gedrückt bleibt...
+            if(!((leftPressed&&rightPressed)||(leftPressed&&upPressed)||
+            		(leftPressed&&downPressed)||(rightPressed&&upPressed)||
+            		(rightPressed&&downPressed)||(upPressed&&downPressed))){
+            	//...Und ein Button gedrückt bleibt, geht das Momentum in die Richtung der gedrückten Taste
+            	if (leftPressed) {
+                    req_dx = -1;
+                    req_dy = 0;
+                } else if (rightPressed) {
+                    req_dx = 1;
+                    req_dy = 0;
+                } else if (upPressed) {
+                    req_dx = 0;
+                    req_dy = -1;
+                } else if (downPressed) {
+                    req_dx = 0;
+                    req_dy = 1;
+                }
+            }
+            
         }
     }
-    
-   
 
     @Override
     public void actionPerformed(ActionEvent e) {
