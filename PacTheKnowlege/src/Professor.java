@@ -2,7 +2,7 @@ public class Professor {
 
 
 	public static int NUMBER_PROFS;
-	public static final int MAX_PROFS = 12;
+	public static final int MAX_PROFS = 20;
 	private int professor_x = 7 * Board.BLOCK_SIZE, professor_y = 3 * Board.BLOCK_SIZE, professor_dx, professor_dy;
 	private static int validSpeeds[] = {1, 2, 3, 4, 6, 8};
 	int professorSpeed=validSpeeds[(int) (Math.random() * (Board.currentSpeed + 1))];

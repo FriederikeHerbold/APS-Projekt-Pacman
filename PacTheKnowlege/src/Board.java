@@ -17,13 +17,12 @@ public class Board extends JPanel implements ActionListener {
 
 	private Student student=new Student();
     private final Font smallFont = new Font("Helvetica", Font.BOLD, 14);
-    private Image ii;
     private boolean inGame = false;
     private boolean dying = false;
     public static final int BLOCK_SIZE = 48;
     public static final int NUMBER_OF_BLOCKS = 15;
     private final int SCREEN_SIZE = NUMBER_OF_BLOCKS * BLOCK_SIZE;
-    public static int pacsLeft, score;
+    public static int studentsLeft, score;
     private Image boardImage;
     private Image sheetImage;
     private final short levelData[] = {
@@ -50,7 +49,7 @@ public class Board extends JPanel implements ActionListener {
     private Image studentStill, studentUp, studentLeft, studentRight, studentDown;
     private Image superStudentStill, superStudentUp, superStudentLeft, superStudentRight, superStudentDown;
     private Professor[] professorArray;
-    private Image ghost;
+    private Image professor;
     private Image coffeeImage;
 
     public Board() {
@@ -62,9 +61,7 @@ public class Board extends JPanel implements ActionListener {
     private void initBoard() {
         
         addKeyListener(new TastaturEingabeRegler());
-
         setFocusable(true);
-
         setBackground(Color.black);
         setDoubleBuffered(true);        
     }
@@ -97,26 +94,27 @@ public class Board extends JPanel implements ActionListener {
         } else {
 
             student.moveStudent();
-            drawPacman(g2d);
-            moveGhosts(g2d);
+            drawstudent(g2d);
+            moveprofessors(g2d);
             checkMaze();
         }
     }
 
     private void showIntroScreen(Graphics2D g2d) {
 
-        g2d.setColor(new Color(0, 32, 48));
-        g2d.fillRect(50, SCREEN_SIZE / 2 - 30, SCREEN_SIZE - 100, 50);
-        g2d.setColor(Color.white);
-        g2d.drawRect(50, SCREEN_SIZE / 2 - 30, SCREEN_SIZE - 100, 50);
+//        g2d.setColor(new Color(0, 32, 48));
+//        g2d.fillRect(50, SCREEN_SIZE / 2 - 30, SCREEN_SIZE - 100, 50);
+//        g2d.setColor(Color.white);
+//        g2d.drawRect(50, SCREEN_SIZE / 2 - 30, SCREEN_SIZE - 100, 50);
 
-        String s = "Press s to start.";
-        Font small = new Font("Helvetica", Font.BOLD, 14);
-        FontMetrics metr = this.getFontMetrics(small);
+//       String start1 = "Kurz vor der Präsentation:\n";
+//        Font small = new Font("Helvetica", Font.BOLD, 14);
+//        FontMetrics metr = this.getFontMetrics(small);
 
-        g2d.setColor(Color.white);
-        g2d.setFont(small);
-        g2d.drawString(s, (SCREEN_SIZE - metr.stringWidth(s)) / 2, SCREEN_SIZE / 2);
+//        g2d.setColor(Color.white);
+//        g2d.setFont(small);
+//        g2d.draw
+        g2d.drawImage(professor, (SCREEN_SIZE) / 2, SCREEN_SIZE / 2,this);
     }
 
     private void drawScore(Graphics2D g) {
@@ -129,7 +127,7 @@ public class Board extends JPanel implements ActionListener {
         s = "Score: " + score;
         g.drawString(s, SCREEN_SIZE / 2 + 96, SCREEN_SIZE + 16);
 
-        for (i = 0; i < pacsLeft; i++) {
+        for (i = 0; i < studentsLeft; i++) {
             g.drawImage(studentStill, i * 28 + 8, SCREEN_SIZE + 1, this);
         }
     }
@@ -166,30 +164,30 @@ public class Board extends JPanel implements ActionListener {
 
     private void death() {
 
-        pacsLeft--;
+        studentsLeft--;
 
-        if (pacsLeft == 0) {
+        if (studentsLeft == 0) {
             inGame = false;
         }
 
         continueLevel(true);
     }
 
-    private void moveGhosts(Graphics2D g2d) {
+    private void moveprofessors(Graphics2D g2d) {
 
         short professorNumber;
 
         for (professorNumber = 0; professorNumber < Professor.NUMBER_PROFS; professorNumber++) {
         	if(professorArray[professorNumber].getProfInGame()){
         		professorArray[professorNumber].move();
-            	drawGhost(g2d, professorArray[professorNumber].getXPos() + 1, professorArray[professorNumber].getYPos() + 1);
+            	drawprofessor(g2d, professorArray[professorNumber].getXPos() + 1, professorArray[professorNumber].getYPos() + 1);
                 
-                int pacman_x=student.getXPosition(),
-                		pacman_y=student.getYPosition();
+                int student_x=student.getXPosition(),
+                		student_y=student.getYPosition();
 
-                if (pacman_x > (professorArray[professorNumber].getXPos() - 12) && pacman_x < (professorArray[professorNumber].getXPos() + 12)
-                        && pacman_y > (professorArray[professorNumber].getYPos() - 12) && 
-                        pacman_y < (professorArray[professorNumber].getYPos() + 12)
+                if (student_x > (professorArray[professorNumber].getXPos() - 12) && student_x < (professorArray[professorNumber].getXPos() + 12)
+                        && student_y > (professorArray[professorNumber].getYPos() - 12) && 
+                        student_y < (professorArray[professorNumber].getYPos() + 12)
                         && inGame && professorArray[professorNumber].getProfInGame()) {
                 	if(student.getSuperMode()){
                 		professorArray[professorNumber].kickProfAway();
@@ -201,11 +199,11 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private void drawGhost(Graphics2D g2d, int x, int y) {
-        g2d.drawImage(ghost, x, y, this);
+    private void drawprofessor(Graphics2D g2d, int x, int y) {
+        g2d.drawImage(professor, x, y, this);
     }
 
-    private void drawPacman(Graphics2D g2d) {
+    private void drawstudent(Graphics2D g2d) {
     	
     	int studentXPosition=student.getXPosition(),
     			studentYPosition=student.getYPosition();
@@ -213,60 +211,60 @@ public class Board extends JPanel implements ActionListener {
     	int view_dx=student.getViewX(),
     			view_dy=student.getViewY();
         if (view_dx == -1) {
-            drawPacnanLeft(g2d, studentXPosition, studentYPosition);
+            drawstudentnanLeft(g2d, studentXPosition, studentYPosition);
         } else if (view_dx == 1) {
-            drawPacmanRight(g2d, studentXPosition, studentYPosition);
+            drawstudentRight(g2d, studentXPosition, studentYPosition);
         } else if (view_dy == -1) {
-            drawPacmanUp(g2d, studentXPosition, studentYPosition);
+            drawstudentUp(g2d, studentXPosition, studentYPosition);
         } else if (view_dy == 1) {
-            drawPacmanDown(g2d, studentXPosition, studentYPosition);
+            drawstudentDown(g2d, studentXPosition, studentYPosition);
         } else {
-            drawPacman(g2d, studentXPosition, studentYPosition);
+            drawstudent(g2d, studentXPosition, studentYPosition);
         }
     }
 
-    private void drawPacmanUp(Graphics2D g2d, int pacman_x, int pacman_y) {
+    private void drawstudentUp(Graphics2D g2d, int student_x, int student_y) {
 
     	if(!student.getSuperMode()){
-                g2d.drawImage(studentUp, pacman_x + 1, pacman_y + 1, this);
+                g2d.drawImage(studentUp, student_x + 1, student_y + 1, this);
     	}else{
-    		g2d.drawImage(superStudentUp, pacman_x + 1, pacman_y + 1, this);
+    		g2d.drawImage(superStudentUp, student_x + 1, student_y + 1, this);
        	}
     }
 
-    private void drawPacmanDown(Graphics2D g2d, int pacman_x, int pacman_y) {
+    private void drawstudentDown(Graphics2D g2d, int student_x, int student_y) {
 
     	if(!student.getSuperMode()){
-            g2d.drawImage(studentDown, pacman_x + 1, pacman_y + 1, this);
+            g2d.drawImage(studentDown, student_x + 1, student_y + 1, this);
     	}else{
-    		g2d.drawImage(superStudentDown, pacman_x + 1, pacman_y + 1, this);
+    		g2d.drawImage(superStudentDown, student_x + 1, student_y + 1, this);
        	}
     }
 
-    private void drawPacnanLeft(Graphics2D g2d, int pacman_x, int pacman_y) {
+    private void drawstudentnanLeft(Graphics2D g2d, int student_x, int student_y) {
 
          if(!student.getSuperMode()){
-                g2d.drawImage(studentLeft, pacman_x + 1, pacman_y + 1, this);
+                g2d.drawImage(studentLeft, student_x + 1, student_y + 1, this);
     	}else{
-                g2d.drawImage(superStudentLeft, pacman_x + 1, pacman_y + 1, this);
+                g2d.drawImage(superStudentLeft, student_x + 1, student_y + 1, this);
     	}
     }
 
-    private void drawPacmanRight(Graphics2D g2d, int pacman_x, int pacman_y) {
+    private void drawstudentRight(Graphics2D g2d, int student_x, int student_y) {
 
     	if(!student.getSuperMode()){
-                g2d.drawImage(studentRight, pacman_x + 1, pacman_y + 1, this);
+                g2d.drawImage(studentRight, student_x + 1, student_y + 1, this);
     	}else{
-                g2d.drawImage(superStudentRight, pacman_x + 1, pacman_y + 1, this);
+                g2d.drawImage(superStudentRight, student_x + 1, student_y + 1, this);
     	} 
     }
     
-    private void drawPacman(Graphics2D g2d, int pacman_x, int pacman_y) {
+    private void drawstudent(Graphics2D g2d, int student_x, int student_y) {
 
     	if(!student.getSuperMode()){
-                g2d.drawImage(studentStill, pacman_x + 1, pacman_y + 1, this);
+                g2d.drawImage(studentStill, student_x + 1, student_y + 1, this);
     	}else{
-                g2d.drawImage(superStudentStill, pacman_x + 1, pacman_y + 1, this);
+                g2d.drawImage(superStudentStill, student_x + 1, student_y + 1, this);
     	} 
     }
 
@@ -290,7 +288,7 @@ public class Board extends JPanel implements ActionListener {
 
     private void initGame() {
 
-        pacsLeft = 3;
+        studentsLeft = 3;
         score = 0;
         initLevel(false);
         Professor.NUMBER_PROFS = 6;
@@ -326,17 +324,15 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void loadImages() {
-        ghost = new ImageIcon("images/professor.png").getImage();   
+        professor = new ImageIcon("images/Professor.png").getImage();
+        boardImage = new ImageIcon("images/Spielfeld.png").getImage();
+        sheetImage = new ImageIcon("images/Zettel.png").getImage();
+        coffeeImage=new ImageIcon("images/Kaffee.png").getImage();   
         studentStill = new ImageIcon("images/Student-vorne.png").getImage();
 		studentUp = new ImageIcon("images/Student-oben.png").getImage();
 		studentDown = new ImageIcon("images/Student-unten.png").getImage();
 		studentLeft = new ImageIcon("images/Student-links.png").getImage();
 		studentRight = new ImageIcon("images/Student-rechts.png").getImage();
-        boardImage = new ImageIcon("images/Spielfeld.png").getImage();
-        sheetImage = new ImageIcon("images/zettel.png").getImage();
-        
-        //PFADE ÄNDERN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        coffeeImage=new ImageIcon("images/kaffee2.png").getImage();
         superStudentStill = new ImageIcon("images/Super-Student-vorne.png").getImage();
         superStudentUp = new ImageIcon("images/Super-Student-oben.png").getImage();
         superStudentDown = new ImageIcon("images/Super-Student-unten.png").getImage();
@@ -367,7 +363,6 @@ public class Board extends JPanel implements ActionListener {
             showIntroScreen(g2d);
         }
 
-        g2d.drawImage(ii, 5, 5, this);
         Toolkit.getDefaultToolkit().sync();
         g2d.dispose();
     }
