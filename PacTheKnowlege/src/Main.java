@@ -10,11 +10,11 @@ public class Main extends JFrame {
     
     private void initUI() {
         
-        add(new Spielfeld());
+        add(new Board());
         
         setTitle("Pacman");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(780, 850);
+        setSize(720, 720);
         setLocationRelativeTo(null);
         setVisible(true);        
     }
