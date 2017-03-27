@@ -82,18 +82,13 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void addNotify() {
         super.addNotify();
-
-//        initGame();
     }
 
     private void playGame(Graphics2D g2d) {
 
         if (dying) {
-
             death();
-
         } else {
-
             student.moveStudent();
             drawstudent(g2d);
             moveprofessors(g2d);
@@ -102,19 +97,6 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void showIntroScreen(Graphics2D g2d) {
-
-//        g2d.setColor(new Color(0, 32, 48));
-//        g2d.fillRect(50, SCREEN_SIZE / 2 - 30, SCREEN_SIZE - 100, 50);
-//        g2d.setColor(Color.white);
-//        g2d.drawRect(50, SCREEN_SIZE / 2 - 30, SCREEN_SIZE - 100, 50);
-
-//       String start1 = "Kurz vor der Präsentation:\n";
-//        Font small = new Font("Helvetica", Font.BOLD, 14);
-//        FontMetrics metr = this.getFontMetrics(small);
-
-//        g2d.setColor(Color.white);
-//        g2d.setFont(small);
-//        g2d.draw
         g2d.drawImage(hello, 48, 240,this);
     }
 
@@ -325,21 +307,21 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void loadImages() {
-    	hello = new ImageIcon("images/Begrüßung.png").getImage();
-        professor = new ImageIcon("images/Professor.png").getImage();
-        boardImage = new ImageIcon("images/Spielfeld.png").getImage();
-        sheetImage = new ImageIcon("images/Zettel.png").getImage();
-        coffeeImage=new ImageIcon("images/Kaffee.png").getImage();   
-        studentStill = new ImageIcon("images/Student-vorne.png").getImage();
-		studentUp = new ImageIcon("images/Student-oben.png").getImage();
-		studentDown = new ImageIcon("images/Student-unten.png").getImage();
-		studentLeft = new ImageIcon("images/Student-links.png").getImage();
-		studentRight = new ImageIcon("images/Student-rechts.png").getImage();
-        superStudentStill = new ImageIcon("images/Super-Student-vorne.png").getImage();
-        superStudentUp = new ImageIcon("images/Super-Student-oben.png").getImage();
-        superStudentDown = new ImageIcon("images/Super-Student-unten.png").getImage();
-        superStudentLeft = new ImageIcon("images/Super-Student-links.png").getImage();
-        superStudentRight = new ImageIcon("images/Super-Student-rechts.png").getImage();
+    	hello = new ImageIcon("Begrüßung.png").getImage();
+        professor = new ImageIcon("Professor.png").getImage();
+        boardImage = new ImageIcon("Spielfeld.png").getImage();
+        sheetImage = new ImageIcon("Zettel.png").getImage();
+        coffeeImage=new ImageIcon("Kaffee.png").getImage();   
+        studentStill = new ImageIcon("Student-vorne.png").getImage();
+		studentUp = new ImageIcon("Student-oben.png").getImage();
+		studentDown = new ImageIcon("Student-unten.png").getImage();
+		studentLeft = new ImageIcon("Student-links.png").getImage();
+		studentRight = new ImageIcon("Student-rechts.png").getImage();
+        superStudentStill = new ImageIcon("Super-Student-vorne.png").getImage();
+        superStudentUp = new ImageIcon("Super-Student-oben.png").getImage();
+        superStudentDown = new ImageIcon("Super-Student-unten.png").getImage();
+        superStudentLeft = new ImageIcon("Super-Student-links.png").getImage();
+        superStudentRight = new ImageIcon("Super-Student-rechts.png").getImage();
     }
 
     @Override
@@ -402,12 +384,6 @@ public class Board extends JPanel implements ActionListener {
                     downPressed=true;
                 } else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
                     inGame = false;
-//                } else if (key == KeyEvent.VK_PAUSE) {
-//                    if (timer.isRunning()) {
-//                        timer.stop();
-//                    } else {
-//                        timer.start();
-//                    }
                 }
             } else {
                 if (key == 's' || key == 'S') {
@@ -451,14 +427,12 @@ public class Board extends JPanel implements ActionListener {
                 } else if (downPressed) {
                 	student.moveDown();
                 }
-            }
-            
+            }   
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         repaint();
     }
 }

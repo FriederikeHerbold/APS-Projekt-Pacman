@@ -9,18 +9,11 @@ public class Student {
 	private int studentAnimCount = STUDENT_ANIM_COUNT;
 	private int studentAnimDir = 1;
 	private int studentAnimPos = 0;
-	private Image student1, student2up, student2left, student2right, student2down;
-	private Image student3up, student3down, student3left, student3right;
-	private Image student4up, student4down, student4left, student4right;
 	private int student_x, student_y, studentd_x, studentd_y;
 	private int req_dx, req_dy, view_dx, view_dy;
 	private Coffee coffee =new Coffee();
 	private boolean superMode=false;
 	private SuperTimer superTimer;
-
-	Student() {
-		this.loadImages();
-	}
 
 	public void doAnim() {
 
@@ -34,24 +27,6 @@ public class Student {
 				studentAnimDir = -studentAnimDir;
 			}
 		}
-	}
-
-	private void loadImages() {
-
-		student1 = new ImageIcon("images/Student.png").getImage();
-		student2up = new ImageIcon("images/Student-oben.png").getImage();
-		student3up = new ImageIcon("images/Student-oben.png").getImage();
-		student4up = new ImageIcon("images/Student-oben.png").getImage();
-		student2down = new ImageIcon("images/Student-unten.png").getImage();
-		student3down = new ImageIcon("images/Student-unten.png").getImage();
-		student4down = new ImageIcon("images/Student-unten.png").getImage();
-		student2left = new ImageIcon("images/Student-links.png").getImage();
-		student3left = new ImageIcon("images/Student-links.png").getImage();
-		student4left = new ImageIcon("images/Student-links.png").getImage();
-		student2right = new ImageIcon("images/Student-rechts.png").getImage();
-		student3right = new ImageIcon("images/Student-rechts.png").getImage();
-		student4right = new ImageIcon("images/Student-rechts.png").getImage();
-
 	}
 	
 	public void moveStudent() {
@@ -93,7 +68,7 @@ public class Student {
                 }
             }
 
-            // Check for standstill
+            // pruefe ob still steht
             if ((studentd_x == -1 && studentd_y == 0 && (ch & 1) != 0)
                     || (studentd_x == 1 && studentd_y == 0 && (ch & 4) != 0)
                     || (studentd_x == 0 && studentd_y == -1 && (ch & 2) != 0)
