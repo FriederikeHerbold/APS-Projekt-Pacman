@@ -51,6 +51,7 @@ public class Board extends JPanel implements ActionListener {
     private Professor[] professorArray;
     private Image professor;
     private Image coffeeImage;
+    private Image hello;
 
     public Board() {
         loadImages();
@@ -114,7 +115,7 @@ public class Board extends JPanel implements ActionListener {
 //        g2d.setColor(Color.white);
 //        g2d.setFont(small);
 //        g2d.draw
-        g2d.drawImage(professor, (SCREEN_SIZE) / 2, SCREEN_SIZE / 2,this);
+        g2d.drawImage(hello, 48, 240,this);
     }
 
     private void drawScore(Graphics2D g) {
@@ -324,6 +325,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void loadImages() {
+    	hello = new ImageIcon("images/Begrüßung.png").getImage();
         professor = new ImageIcon("images/Professor.png").getImage();
         boardImage = new ImageIcon("images/Spielfeld.png").getImage();
         sheetImage = new ImageIcon("images/Zettel.png").getImage();
