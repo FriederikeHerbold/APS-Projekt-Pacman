@@ -12,9 +12,9 @@ public class Main extends JFrame {
         
         add(new Board());
         
-        setTitle("Pacman");
+        setTitle("Pac-The-Knowlege");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(720, 720);
+        setSize(750, 850);
         setLocationRelativeTo(null);
         setVisible(true);        
     }
