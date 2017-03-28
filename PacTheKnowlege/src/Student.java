@@ -145,6 +145,7 @@ public class Student {
 	}
 
 	public synchronized void reset(boolean death) {
+		superMode=false;
 		student_x = 7 * Board.BLOCK_SIZE;
         student_y = 8 * Board.BLOCK_SIZE;
         studentd_x = 0;
@@ -186,8 +187,10 @@ public class Student {
 	}
 
 	public void normalize() {
-		coffee.resetOfDeathOrDrinkOrEndOfSuper();
-		superMode=false;
+		if(superMode){
+			coffee.resetOfDeathOrDrinkOrEndOfSuper();
+			superMode=false;
+		}
 	}
 
 	public boolean getSuperMode() {
