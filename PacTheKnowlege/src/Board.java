@@ -307,21 +307,21 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void loadImages() {
-    	hello = new ImageIcon("Begrüßung.png").getImage();
-        professor = new ImageIcon("Professor.png").getImage();
-        boardImage = new ImageIcon("Spielfeld.png").getImage();
-        sheetImage = new ImageIcon("Zettel.png").getImage();
-        coffeeImage=new ImageIcon("Kaffee.png").getImage();   
-        studentStill = new ImageIcon("Student-vorne.png").getImage();
-		studentUp = new ImageIcon("Student-oben.png").getImage();
-		studentDown = new ImageIcon("Student-unten.png").getImage();
-		studentLeft = new ImageIcon("Student-links.png").getImage();
-		studentRight = new ImageIcon("Student-rechts.png").getImage();
-        superStudentStill = new ImageIcon("Super-Student-vorne.png").getImage();
-        superStudentUp = new ImageIcon("Super-Student-oben.png").getImage();
-        superStudentDown = new ImageIcon("Super-Student-unten.png").getImage();
-        superStudentLeft = new ImageIcon("Super-Student-links.png").getImage();
-        superStudentRight = new ImageIcon("Super-Student-rechts.png").getImage();
+    	hello = new ImageIcon(getClass().getResource("images/Begrüßung.png")).getImage();
+        professor = new ImageIcon(getClass().getResource("images/Professor.png")).getImage();
+        boardImage = new ImageIcon(getClass().getResource("images/Spielfeld.png")).getImage();
+        sheetImage = new ImageIcon(getClass().getResource("images/Zettel.png")).getImage();
+        coffeeImage=new ImageIcon(getClass().getResource("images/Kaffee.png")).getImage();   
+        studentStill = new ImageIcon(getClass().getResource("images/Student-vorne.png")).getImage();
+		studentUp = new ImageIcon(getClass().getResource("images/Student-oben.png")).getImage();
+		studentDown = new ImageIcon(getClass().getResource("images/Student-unten.png")).getImage();
+		studentLeft = new ImageIcon(getClass().getResource("images/Student-links.png")).getImage();
+		studentRight = new ImageIcon(getClass().getResource("images/Student-rechts.png")).getImage();
+        superStudentStill = new ImageIcon(getClass().getResource("images/Super-Student-vorne.png")).getImage();
+        superStudentUp = new ImageIcon(getClass().getResource("images/Super-Student-oben.png")).getImage();
+        superStudentDown = new ImageIcon(getClass().getResource("images/Super-Student-unten.png")).getImage();
+        superStudentLeft = new ImageIcon(getClass().getResource("images/Super-Student-links.png")).getImage();
+        superStudentRight = new ImageIcon(getClass().getResource("images/Super-Student-rechts.png")).getImage();
     }
 
     @Override
