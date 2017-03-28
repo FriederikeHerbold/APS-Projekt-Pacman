@@ -16,7 +16,7 @@ import javax.swing.Timer;
 public class Board extends JPanel implements ActionListener {
 
 	private Student student=new Student();
-    private final Font smallFont = new Font("Helvetica", Font.BOLD, 14);
+    private final Font smallFont = new Font("Helvetica", Font.BOLD, 20);
     private boolean inGame = false;
     private boolean dying = false;
     public static final int BLOCK_SIZE = 48;
@@ -25,6 +25,7 @@ public class Board extends JPanel implements ActionListener {
     public static int studentsLeft, score;
     private Image boardImage;
     private Image sheetImage;
+    private static int level;
     private final short levelData[] = {
     		3,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  6, 
     		1,  0, 19, 26, 26, 22,  0,  0,  0, 19, 26, 26, 26, 22,  4, 
@@ -42,8 +43,8 @@ public class Board extends JPanel implements ActionListener {
     		1, 25, 26, 26, 26, 24, 28,  0,  0,  0,  0, 25, 26, 28,  4, 
     		9,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  12
     };
-    private final int maxSpeed = 6;
-    public static int currentSpeed = 3;
+    private final int maxSpeed = 5;
+    public static int currentSpeed = 2;
     public static short[] screenData;
     private Timer timer;
     private Image studentStill, studentUp, studentLeft, studentRight, studentDown;
@@ -52,6 +53,9 @@ public class Board extends JPanel implements ActionListener {
     private Image professor;
     private Image coffeeImage;
     private Image hello;
+    private Image complete;
+    LevelFinishedTimer lft;
+	private boolean victory=false;
 
     public Board() {
         loadImages();
@@ -84,16 +88,16 @@ public class Board extends JPanel implements ActionListener {
         super.addNotify();
     }
 
-    private void playGame(Graphics2D g2d) {
-
-        if (dying) {
-            death();
-        } else {
-            student.moveStudent();
-            drawstudent(g2d);
-            moveprofessors(g2d);
-            checkMaze();
+    private synchronized void playGame(Graphics2D g2d) {
+    		if (dying) {
+                death();
+            } else {
+                student.moveStudent();
+                drawstudent(g2d);
+                moveprofessors(g2d);
+                checkMaze(g2d);
         }
+
     }
 
     private void showIntroScreen(Graphics2D g2d) {
@@ -106,16 +110,17 @@ public class Board extends JPanel implements ActionListener {
         String s;
 
         g.setFont(smallFont);
-        g.setColor(new Color(96, 128, 255));
+        g.setColor(Color.blue);
         s = "Score: " + score;
-        g.drawString(s, SCREEN_SIZE / 2 + 96, SCREEN_SIZE + 16);
+        g.drawString(s, 20, 700);
+        g.drawString("Level: "+ level, 20, 30);
 
         for (i = 0; i < studentsLeft; i++) {
             g.drawImage(studentStill, i * 28 + 8, SCREEN_SIZE + 1, this);
         }
     }
 
-    private void checkMaze() {
+    private void checkMaze(Graphics2D g2d) {
 
         short i = 0;
         boolean finished = true;
@@ -132,6 +137,10 @@ public class Board extends JPanel implements ActionListener {
         if (finished) {
 
             score += 50;
+            
+            victory=true;
+            lft=new LevelFinishedTimer(this);
+            lft.start();
 
             if (Professor.NUMBER_PROFS < Professor.MAX_PROFS) {
                 Professor.NUMBER_PROFS++;
@@ -171,7 +180,7 @@ public class Board extends JPanel implements ActionListener {
                 if (student_x > (professorArray[professorNumber].getXPos() - 12) && student_x < (professorArray[professorNumber].getXPos() + 12)
                         && student_y > (professorArray[professorNumber].getYPos() - 12) && 
                         student_y < (professorArray[professorNumber].getYPos() + 12)
-                        && inGame && professorArray[professorNumber].getProfInGame()) {
+                        && inGame && !victory && professorArray[professorNumber].getProfInGame()) {
                 	if(student.getSuperMode()){
                 		professorArray[professorNumber].kickProfAway();
                 	}else{
@@ -273,7 +282,8 @@ public class Board extends JPanel implements ActionListener {
 
         studentsLeft = 3;
         score = 0;
-        initLevel(false);
+        level=0;
+        initLevel(true);
         Professor.NUMBER_PROFS = 6;
         currentSpeed = 3;
     }
@@ -284,7 +294,7 @@ public class Board extends JPanel implements ActionListener {
         for (i = 0; i < NUMBER_OF_BLOCKS * NUMBER_OF_BLOCKS; i++) {
             screenData[i] = levelData[i];
         }
-
+        level++;
         continueLevel(death);
     }
 
@@ -292,6 +302,8 @@ public class Board extends JPanel implements ActionListener {
 
         short profIndex;
         int dx = 1;
+
+        student.reset(death);
 
         for (profIndex = 0; profIndex < Professor.NUMBER_PROFS; profIndex++) {
         	
@@ -301,13 +313,12 @@ public class Board extends JPanel implements ActionListener {
         	}
 
         }
-
-        student.reset(death);
         dying = false;
     }
 
     private void loadImages() {
     	hello = new ImageIcon(getClass().getResource("images/Begrüßung.png")).getImage();
+    	complete = new ImageIcon(getClass().getResource("images/LevelGeschafft.png")).getImage();
         professor = new ImageIcon(getClass().getResource("images/Professor.png")).getImage();
         boardImage = new ImageIcon(getClass().getResource("images/Spielfeld.png")).getImage();
         sheetImage = new ImageIcon(getClass().getResource("images/Zettel.png")).getImage();
@@ -341,10 +352,12 @@ public class Board extends JPanel implements ActionListener {
         student.doAnim();
         drawCoffee(g2d);
 
-        if (inGame) {
+        if (inGame && !victory) {
             playGame(g2d);
-        } else {
+        } else if(!inGame){
             showIntroScreen(g2d);
+        }else{
+        	g2d.drawImage(complete, 48, 240, this);
         }
 
         Toolkit.getDefaultToolkit().sync();
@@ -434,5 +447,9 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
+    }
+    
+    public void setVictory(boolean victory){
+    	this.victory=victory;
     }
 }

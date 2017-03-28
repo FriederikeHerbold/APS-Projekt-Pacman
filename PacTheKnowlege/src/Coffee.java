@@ -55,6 +55,7 @@ public class Coffee {
 		}else{
 			emptyFields.addLast(new Integer(feldNummer));
 		}
+//		System.out.println(emptyFields.size());
 	}
 	
 }
